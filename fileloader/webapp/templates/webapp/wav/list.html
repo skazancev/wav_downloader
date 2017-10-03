@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="{% url 'webapp:add' %}">Добавить еще</a>
+    <div class="list">
+        <table border="1" width="80%" style="margin: 0 auto; text-align: center; border-collapse: collapse">
+            <thead>
+            <tr>
+                <th>Файл</th>
+                <th>Активный</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in objects %}
+                <tr>
+                    <td width="50%">
+                        <p>{{ object.filename }}</p>
+                        {% if object.active %}
+                        <audio controls style="width: 100%">
+                            <source src="{{ object.file.url }}" type="audio/wav">
+                        </audio>
+                        {% endif %}
+                    </td>
+                    <td width="20%">{{ object.active|yesno:'Да, Нет' }}</td>
+                    <td width="30%">
+                        <a href="{% url 'webapp:change' object.id %}">Изменить</a>
+                        <form action="{% url 'webapp:delete' object.id %}" method="post">
+                            {% csrf_token %}
+                            <a class="delete" href="">Удалить</a>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Нет данных</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $('.delete').click(function (e) {
+            e.preventDefault();
+            if (confirm('Вы действительно хотите удалить файл? ')) {
+                $(this).closest('form').submit()
+            }
+        })
+    </script>
+{% endblock %}
