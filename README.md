@@ -47,3 +47,6 @@ DATABASES = {
 Дальше идет настройка nginx, gunicorn + supervisor 
 
 `http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/`
+
+Запуск сервера с помощью gunicorn с 3 воркерами
+`python gunicorn main.wsgi:application -b 127.0.0.1:8020 --reload -w 3`
