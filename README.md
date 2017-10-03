@@ -20,14 +20,23 @@
 
 `
 DATABASES = {
+
     'default': {
+    
         'ENGINE': 'django.db.backends.mysql',
+        
         'NAME': 'db_name',
+        
         'USER': 'db_user',
+        
         'PASSWORD': 'password',
+        
         'HOST': 'localhost',
+        
         'PORT': '3306',
+        
     }
+    
 }
 `
 
