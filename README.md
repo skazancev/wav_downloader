@@ -18,34 +18,23 @@
 
 Создать файл `main/local.py` и добавить настройки базы данных
 
-`
-DATABASES = {
 
-    'default': {
-    
-        'ENGINE': 'django.db.backends.mysql',
-        
-        'NAME': 'db_name',
-        
-        'USER': 'db_user',
-        
-        'PASSWORD': 'password',
-        
-        'HOST': 'localhost',
-        
-        'PORT': '3306',
-        
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'db_name',
+            'USER': 'db_user',
+            'PASSWORD': 'password',
+            'HOST': 'localhost',
+            'PORT': '3306',    
+        }    
     }
-    
-}
-`
-в local.py можно вносить свои настройки для сервера
 
-`
-CONFIG_NAME = 'extensions_custom_ivr.conf'
-CONFIG_PATH = '/etc/asterisk/'
-MEDIA_ROOT = '/var/spool/asterisk/sounds/custom/'
-`
+В local.py можно вносить свои настройки для сервера
+
+    CONFIG_NAME = 'extensions_custom_ivr.conf'
+    CONFIG_PATH = '/etc/asterisk/'
+    MEDIA_ROOT = '/var/spool/asterisk/sounds/custom/'
 
 `python manage.py migrate`
 
@@ -56,4 +45,5 @@ MEDIA_ROOT = '/var/spool/asterisk/sounds/custom/'
 `http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/`
 
 Запуск сервера с помощью gunicorn с 3 воркерами
+
 `python gunicorn main.wsgi:application -b 127.0.0.1:8020 --reload -w 3`
