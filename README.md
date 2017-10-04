@@ -16,7 +16,7 @@
 
 `cd fileloader`
 
-В файл `main/settings.py` добавить настройки базы данных
+Создать файл `main/local.py` и добавить настройки базы данных
 
 `
 DATABASES = {
@@ -38,6 +38,13 @@ DATABASES = {
     }
     
 }
+`
+в local.py можно вносить свои настройки для сервера
+
+`
+CONFIG_NAME = 'extensions_custom_ivr.conf'
+CONFIG_PATH = '/etc/asterisk/'
+MEDIA_ROOT = '/var/spool/asterisk/sounds/custom/'
 `
 
 `python manage.py migrate`
