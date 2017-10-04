@@ -126,9 +126,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
 
 LOGGING = {
     'version': 1,
@@ -145,3 +142,13 @@ LOGGING = {
         }
     },
 }
+
+CONFIG_NAME = 'extensions_custom_ivr.conf'
+CONFIG_PATH = '/etc/asterisk/'
+MEDIA_ROOT = '/var/spool/asterisk/sounds/custom/'
+MEDIA_URL = '/media/'
+
+try:
+    from .local import *
+except ImportError:
+    pass

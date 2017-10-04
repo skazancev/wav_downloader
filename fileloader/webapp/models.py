@@ -5,11 +5,13 @@ import logging
 import wave
 
 import os
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
+from webapp.utils import build_config
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,7 @@ def validate_wav(value):
 
 
 class WAVFile(models.Model):
-    file = models.FileField(upload_to='files/', validators=[validate_wav])
+    file = models.FileField(upload_to='.', validators=[validate_wav])
     number = models.PositiveIntegerField()
     active = models.BooleanField(default=True)
 
@@ -42,13 +44,17 @@ class WAVFile(models.Model):
 
 @receiver(post_save, sender=WAVFile)
 def save(instance, created, **kwargs):
+    build_config(WAVFile.objects.filter(active=True))
+
     if created:
         return
 
-    if instance.old_file != instance.file.name:
+    if instance.old_file != instance.file.name and os.path.exists(instance.file.path):
         os.remove(instance.file.path)
 
 
 @receiver(post_delete, sender=WAVFile)
 def delete(instance, **kwargs):
-    os.remove(instance.file.path)
+    build_config(WAVFile.objects.filter(active=True))
+    if os.path.exists(instance.file.path):
+        os.remove(instance.file.path)
