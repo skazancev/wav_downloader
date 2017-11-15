@@ -35,7 +35,10 @@ pip install mysqlclient gunicorn
 ```
 
 ##### создание базы
-`mysql -uroot -p`
+```
+yum install mysql
+mysql -uroot -p
+```
 ```
 create database wav_downloader character set utf8 collate utf8_general_ci;
 CREATE USER 'wav_downloader'@'localhost' IDENTIFIED BY 'password'
