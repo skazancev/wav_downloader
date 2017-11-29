@@ -21,7 +21,8 @@ class WAVConfig(object):
             if os.path.exists(obj.file.path):
                 configs.append(self.render_str(obj.number, obj.filename))
 
-        self.config = '\n'.join(configs)
+        self.config = '[from-trunk-custom-ivr]\n'
+        self.config += '\n'.join(configs)
         self.save()
 
     def save(self):
