@@ -30,7 +30,7 @@ def validate_wav(value):
 
 class WAVFile(models.Model):
     file = models.FileField(upload_to='.', validators=[validate_wav])
-    number = models.PositiveIntegerField()
+    number = models.CharField(verbose_name='DID номер', max_length=50)
     active = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):

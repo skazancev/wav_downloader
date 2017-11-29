@@ -195,7 +195,7 @@ server {
     }
 
     location /media/ {
-        alias /root/wav_downloader/media/;
+        alias /var/spool/asterisk/sounds/custom/;
         expires 30;
     }
 

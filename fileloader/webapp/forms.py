@@ -6,6 +6,9 @@ class WAVForm(forms.ModelForm):
     class Meta:
         model = WAVFile
         fields = ['file', 'number']
+        widgets = {
+            'number': forms.NumberInput()
+        }
 
 
 class WAVChangeForm(forms.ModelForm):
