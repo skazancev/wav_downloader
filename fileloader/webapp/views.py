@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import wave
+
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -12,7 +14,13 @@ from webapp.models import WAVFile
 def wav_add_view(request):
     form = WAVForm(request.POST or None, request.FILES or None)
     if form.is_valid():
-        form.save()
+        obj = form.save()
+        try:
+            if wave.open(obj.file.path).getparams()[:3] != (1, 2, 8000):
+                raise wave.Error()
+        except (FileNotFoundError, wave.Error):
+            obj.convert()
+
         return redirect(reverse('webapp:list'))
     return render(request, 'webapp/wav/add.html', {'form': form})
 
@@ -25,7 +33,12 @@ def wav_change_view(request, pk):
     obj = get_object_or_404(WAVFile, pk=pk)
     form = WAVChangeForm(instance=obj, data=request.POST or None)
     if form.is_valid():
-        form.save()
+        obj = form.save()
+        try:
+            if wave.open(obj.file.path).getparams()[:3] != (1, 2, 8000):
+                raise wave.Error()
+        except (FileNotFoundError, wave.Error):
+            obj.convert()
         return redirect(reverse('webapp:list'))
     return render(request, 'webapp/wav/change.html', {'form': form})
 

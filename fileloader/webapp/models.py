@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-import logging
 import wave
 
 import os
@@ -10,22 +6,14 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from pydub import AudioSegment
 
 from webapp.utils import build_config
 
-logger = logging.getLogger(__name__)
-
 
 def validate_wav(value):
-    if not value.name.endswith('.wav'):
+    if not value.name.endswith(('.wav', '.mp3')):
         raise ValidationError('Неверный формат файла')
-    try:
-        if wave.open(value).getparams()[:3] != (1, 2, 8000):
-            raise ValidationError('Неверные параметры файла')
-
-    except Exception as e:
-        logger.warning(e)
-        raise ValidationError('Неверные параметры файла')
 
 
 class WAVFile(models.Model):
@@ -35,7 +23,19 @@ class WAVFile(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(WAVFile, self).__init__(*args, **kwargs)
-        self.old_file = self.file.name
+        self.old_file = self.file
+
+    def convert(self):
+        if self.file.name.endswith('.mp3'):
+            sound = AudioSegment.from_mp3(self.file.file)
+            self.file = self.file.name.replace('.mp3', '.wav')
+            self.save()
+        else:
+            sound = AudioSegment.from_wav(self.file.path)
+        sound = sound.set_channels(1)
+        sound = sound.set_frame_rate(8000)
+        sound = sound.set_sample_width(2)
+        sound.export(self.file.path, format="wav")
 
     @property
     def filename(self):
@@ -49,7 +49,7 @@ def save(instance, created, **kwargs):
     if created:
         return
 
-    if instance.old_file != instance.file.name and os.path.exists(instance.file.path):
+    if instance.old_file.name != instance.file.name and os.path.exists(instance.file.path):
         os.remove(instance.file.path)
 
 
